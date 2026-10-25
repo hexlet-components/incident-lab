@@ -28,7 +28,10 @@ jobs:
           TO: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           if [ "$FROM" = "0000000000000000000000000000000000000000" ]; then
-            git log -1 --format=%B "$TO" | commitlint
+            # GitHub generates this commit when creating a repository from a template.
+            if [ "$(git rev-list --count "$TO")" != "1" ] || [ "$(git log -1 --format=%s "$TO")" != "Initial commit" ]; then
+              git log -1 --format=%B "$TO" | commitlint
+            fi
           else
             commitlint --from "$FROM" --to "$TO"
           fi

@@ -92,7 +92,17 @@ describe("running application", () => {
     expect(event.breadcrumbs.length).toBeGreaterThan(0);
     const requests = await readFile(join(dir, "requests.jsonl"), "utf8");
     expect(requests).toContain('"status":200');
-    expect(requests).toContain('"status":500');
+    await expect
+      .poll(
+        async () =>
+          (await readFile(join(dir, "requests.jsonl"), "utf8"))
+            .trim()
+            .split("\n")
+            .map((line) => JSON.parse(line))
+            .find((record) => record.requestId === result.requestId),
+        { timeout: 2000 },
+      )
+      .toMatchObject({ status: 500, path: "/__test__/error", runId: "capture-test" });
   });
 
   test("searches available catalog products using the server contract", async () => {

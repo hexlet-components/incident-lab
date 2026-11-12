@@ -7,8 +7,12 @@ updates:
     schedule:
       interval: monthly
     groups:
-      dependencies:
+      dependencies-minor-patch:
         patterns: ["*"]
+        update-types: ["minor", "patch"]
+      dependencies-major:
+        patterns: ["*"]
+        update-types: ["major"]
   - package-ecosystem: github-actions
     cooldown:
       default-days: 7
@@ -16,5 +20,9 @@ updates:
     schedule:
       interval: monthly
     groups:
-      actions:
+      actions-minor-patch:
         patterns: ["*"]
+        update-types: ["minor", "patch"]
+      actions-major:
+        patterns: ["*"]
+        update-types: ["major"]
